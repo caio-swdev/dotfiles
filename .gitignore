@@ -1,0 +1,12 @@
+# never publish credentials
+.env
+.env.*
+!.env.example
+*.db
+*.pem
+*.key
+id_rsa*
+id_ed25519*
+*.gpg
+*credentials*
+*secret*
