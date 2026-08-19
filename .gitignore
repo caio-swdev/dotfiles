@@ -2,11 +2,15 @@
 .env
 .env.*
 !.env.example
+.git-credentials
+**/hosts.yml
+**/key[0-9].db
+**/logins.json
 *.db
 *.pem
 *.key
+*.gpg
 id_rsa*
 id_ed25519*
-*.gpg
 *credentials*
 *secret*
