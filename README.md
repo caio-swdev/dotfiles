@@ -7,6 +7,7 @@ Curated, public subset of my Ubuntu dev environment configuration.
 | Path | What |
 |------|------|
 | `.config/Code/User/keybindings.json` | VS Code keybindings |
+| `windows/powertoys/settings_133834989560050266.ptb` | PowerToys settings backup (v0.87.1, 2025-02-08) |
 
 ## Notes
 
