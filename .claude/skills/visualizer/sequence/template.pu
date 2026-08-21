@@ -1,0 +1,52 @@
+@startuml Sequence Diagram Template
+!theme plain
+skinparam defaultTextAlignment center
+
+' Pastel color palette
+skinparam SequenceLifeLineBorderColor #888888
+skinparam SequenceLifeLineBackgroundColor #F5F5F5
+
+title [Your Diagram Title Here]
+
+' Define participants with pastel colors
+actor User #FFE5E5
+participant "System A" as A #E5F5FF
+participant "System B" as B #FFF5E5
+database "Database" as DB #E5FFE5
+
+' Main flow
+User -> A: Initial request
+activate A #E5F5FF
+
+A -> B: Process request
+activate B #FFF5E5
+
+B -> DB: Query data
+DB --> B: Return data
+
+B --> A: Processing result
+deactivate B
+
+A --> User: Final response
+deactivate A
+
+' Optional: Add notes for complex logic
+note right of A
+  Add explanatory notes here
+  for complex processing
+end note
+
+' Optional: Add alternative flows
+alt Success case
+  A -> B: Success path
+else Error case
+  A -> B: Error handling
+end
+
+' Optional: Add loops
+loop For each item
+  A -> B: Process item
+  B --> A: Item result
+end
+
+@enduml

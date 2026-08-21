@@ -1,0 +1,19 @@
+@startuml c4-level1-context
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+title <System Name> — System Context
+
+Person(user, "End User", "Primary user of the system")
+Person_Ext(admin, "Administrator", "Manages system configuration")
+
+System(system, "<System Name>", "Core application")
+
+System_Ext(auth, "Auth Provider", "Handles authentication")
+System_Ext(email, "Email Service", "Sends transactional emails")
+
+Rel(user, system, "Uses")
+Rel(admin, system, "Configures")
+Rel(system, auth, "Authenticates via")
+Rel(system, email, "Sends emails via")
+
+@enduml

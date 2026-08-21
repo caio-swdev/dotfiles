@@ -1,0 +1,38 @@
+@startuml Activity Template
+!theme plain
+skinparam defaultTextAlignment center
+
+title Process Flow Title
+
+' Simple linear flow
+start
+
+:First activity;
+:Second activity;
+
+' Decision point
+if (Decision question?) then (yes)
+  :Action if yes;
+else (no)
+  :Action if no;
+endif
+
+' Loop
+repeat
+  :Repeated action;
+repeat while (Continue?) is (yes)
+->no;
+
+' Parallel processing
+fork
+  :Parallel task 1;
+fork again
+  :Parallel task 2;
+end fork
+
+' Final activity
+:Complete process;
+
+stop
+
+@enduml

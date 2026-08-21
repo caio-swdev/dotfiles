@@ -1,0 +1,109 @@
+<title>Hand-drawn sketch (Rough.js)</title>
+<!--
+  Goal-agnostic Rough.js scaffold.
+  Build: replace __ROUGHJS__ with the contents of the vendored rough.js UMD bundle
+  (see rough/rough.md → "Setup"). Then open in a browser or publish via the Artifact tool.
+  Replace the SAMPLE drawing in draw() with your own shapes/annotations.
+-->
+
+<style>
+  :root{
+    --bg:#fbfaf7; --panel:#ffffff; --ink:#1f2430; --muted:#6b7280; --line:#e7e3da;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{ --bg:#12161d; --panel:#1a1f28; --ink:#e9ecf1; --muted:#9aa4b2; --line:#2a313c; }
+  }
+  :root[data-theme="dark"]{ --bg:#12161d; --panel:#1a1f28; --ink:#e9ecf1; --muted:#9aa4b2; --line:#2a313c; }
+  :root[data-theme="light"]{ --bg:#fbfaf7; --panel:#ffffff; --ink:#1f2430; --muted:#6b7280; --line:#e7e3da; }
+
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:ui-sans-serif,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;line-height:1.5}
+  .page{max-width:1100px;margin:0 auto;padding:28px 22px 48px}
+  header{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:18px}
+  h1{font-size:1.4rem;margin:0;text-wrap:balance}
+  .toggle{cursor:pointer;background:var(--panel);color:var(--ink);border:1px solid var(--line);
+    border-radius:999px;padding:7px 13px;font-size:.85rem;font-weight:600}
+  .toggle:focus-visible{outline:2px solid currentColor;outline-offset:2px}
+  .stage{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px;overflow-x:auto}
+  canvas{display:block;margin:0 auto;border-radius:8px}
+</style>
+
+<div class="page">
+  <header>
+    <h1>Hand-drawn sketch</h1>
+    <button class="toggle" id="themeBtn" type="button" aria-label="Toggle theme">Toggle theme</button>
+  </header>
+  <div class="stage">
+    <canvas id="sketch" role="img" aria-label="Hand-drawn sketch rendered with Rough.js."></canvas>
+  </div>
+</div>
+
+<script>
+__ROUGHJS__
+</script>
+
+<script>
+(function(){
+  const cv = document.getElementById('sketch');
+  const ctx = cv.getContext('2d');
+  const root = document.documentElement;
+  const W = 900, H = 460;                                   // design size, edit to taste
+  const dpr = Math.max(1, Math.min(3, window.devicePixelRatio || 1));
+  cv.width = W*dpr; cv.height = H*dpr; cv.style.width = W+'px'; cv.style.height = H+'px';
+
+  const SEED = 7;                                           // fixed → stable redraws
+  const HAND = '"Comic Sans MS","Chalkboard SE","Segoe Print","Bradley Hand",cursive';
+
+  const LIGHT = { surface:'#ffffff', ink:'#1f2430', muted:'#868e96',
+                  a:'#4263eb', warn:'#e8590c', mark:'#f59f00', bad:'#e03131' };
+  const DARK  = { surface:'#1b2028', ink:'#e9ecf1', muted:'#9aa4b2',
+                  a:'#91a7ff', warn:'#ffa94d', mark:'#ffd43b', bad:'#ff8787' };
+  function theme(){ const a=root.getAttribute('data-theme');
+    return a || (matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light'); }
+
+  // ── goal-agnostic annotation helpers (see rough/rough.md) ──
+  function arrow(rc,x1,y1,x2,y2,c){ const s=12,a=Math.atan2(y2-y1,x2-x1);
+    rc.line(x1,y1,x2,y2,{roughness:1.3,strokeWidth:2,stroke:c,seed:SEED});
+    rc.line(x2,y2,x2-s*Math.cos(a-0.4),y2-s*Math.sin(a-0.4),{roughness:1,strokeWidth:2,stroke:c,seed:SEED});
+    rc.line(x2,y2,x2-s*Math.cos(a+0.4),y2-s*Math.sin(a+0.4),{roughness:1,strokeWidth:2,stroke:c,seed:SEED}); }
+  function ring(rc,cx,cy,w,h,c){ rc.ellipse(cx,cy,w,h,{roughness:1.6,strokeWidth:2.4,stroke:c,seed:SEED}); }
+  function box(rc,x,y,w,h,c,fill){ rc.rectangle(x,y,w,h,{roughness:1.5,strokeWidth:2,stroke:c,
+    fill:fill,fillStyle:'hachure',hachureGap:14,fillWeight:0.8,seed:SEED}); }
+  function underline(rc,x,y,w,c){ rc.line(x,y,x+w,y,{roughness:2.2,bowing:2,strokeWidth:3,stroke:c,seed:SEED}); }
+
+  function label(txt,x,y,c,size,align){ ctx.fillStyle=c; ctx.font=size+'px '+HAND;
+    ctx.textAlign=align||'left'; ctx.textBaseline='alphabetic'; ctx.fillText(txt,x,y); }
+
+  function draw(){
+    const P = theme()==='dark'?DARK:LIGHT;
+    ctx.setTransform(dpr,0,0,dpr,0,0); ctx.clearRect(0,0,W,H);
+    ctx.fillStyle=P.surface; ctx.fillRect(0,0,W,H);
+    const rc = rough.canvas(cv);
+
+    // ── SAMPLE, replace with your own figure ──
+    box(rc, 70, 90, 240, 130, P.a, hexA(P.a,0.06));
+    label('boxed region', 190, 76, P.a, 16, 'center');
+
+    ring(rc, 520, 150, 210, 150, P.warn);
+    label('circled callout', 520, 60, P.warn, 16, 'center');
+
+    arrow(rc, 320, 155, 410, 150, P.warn);
+
+    label('marker underline', 130, 300, P.ink, 18, 'left');
+    underline(rc, 128, 310, 190, P.mark);
+
+    label('leader → note', 470, 330, P.muted, 15, 'left');
+    arrow(rc, 600, 250, 590, 315, P.muted);
+
+    function hexA(hex,al){ const n=parseInt(hex.slice(1),16);
+      return 'rgba('+((n>>16)&255)+','+((n>>8)&255)+','+(n&255)+','+al+')'; }
+  }
+
+  document.getElementById('themeBtn').addEventListener('click',()=>{
+    root.setAttribute('data-theme', theme()==='dark'?'light':'dark'); draw(); });
+  matchMedia('(prefers-color-scheme:dark)').addEventListener('change',()=>{ if(!root.getAttribute('data-theme')) draw(); });
+  new MutationObserver(draw).observe(root,{attributes:true,attributeFilter:['data-theme']});
+  draw();
+})();
+</script>
