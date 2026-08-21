@@ -192,4 +192,6 @@ Common error patterns and fixes are documented in the diagram type-specific inst
 
 ## When NOT to Use
 
-If user wants to document existing code in their project, suggest using the `/sl-docs-pu` command instead - that's specialized for codebase documentation.
+If user wants to document existing code in their project, use a codebase-documentation
+workflow instead. This skill is for authoring new diagrams, not for reverse-engineering
+existing source.
